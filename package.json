@@ -7,8 +7,9 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/app.ts",
     "start": "node dist/index.js",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
+    "db:show": "drizzle-kit studio --config ./src/drizzle.config.ts",
+    "db:generate": "drizzle-kit generate --config ./src/drizzle.config.ts",
+    "db:push": "drizzle-kit push --config ./src/drizzle.config.ts",
     "db:migrate": "tsx src/db/migrate.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

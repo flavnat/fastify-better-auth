@@ -10,7 +10,7 @@ declare module 'fastify' {
 }
 
 export default fp(async (fastify) => {
-  const sqlite = new Database('./src/data/app.db', {
+  const sqlite = new Database('./data/app.db', {
     verbose: (msg) => fastify.log.debug(msg),
   });
 
