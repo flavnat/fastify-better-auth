@@ -1,8 +1,5 @@
-import "fastify";
-import type Database from "better-sqlite3";
+// This file is kept for backwards compatibility
+// Type declarations are now in their respective plugin files
+// See: src/plugins/db.ts, src/plugins/auth.ts
 
-declare module "fastify" {
-  interface FastifyInstance {
-    sqlite: Database;
-  }
-}
+export { };

@@ -1,20 +1,34 @@
-import fp from 'fastify-plugin';
-import { drizzle, BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import Database from 'better-sqlite3';
-import * as schema from '../db/schema.js';
+import fp from "fastify-plugin";
+import type { FastifyInstance } from "fastify";
+import { db, closeDatabase } from "../db/index.js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import type * as schema from "../db/schema.js";
 
-declare module 'fastify' {
+declare module "fastify" {
   interface FastifyInstance {
-    db: BetterSQLite3Database<typeof schema>;
+    db: NodePgDatabase<typeof schema>;
   }
 }
 
-const sqlite = new Database('./data/app.db');
-export const db = drizzle(sqlite, { schema });
+/**
+ * Database Plugin
+ * 
+ * Decorates the Fastify instance with the Drizzle ORM database connection.
+ * Automatically closes the connection when the server shuts down.
+ */
+async function dbPlugin(fastify: FastifyInstance) {
+  // Decorate fastify instance with database
+  fastify.decorate("db", db);
 
-export default fp(async (fastify) => {
-  fastify.decorate('db', db);
-  fastify.addHook('onClose', async () => {
-    sqlite.close();
+  // Close database connection on server shutdown
+  fastify.addHook("onClose", async () => {
+    fastify.log.info("Closing database connection...");
+    closeDatabase();
   });
-}, { name: 'db' });
+
+  fastify.log.info("Database plugin registered");
+}
+
+export default fp(dbPlugin, {
+  name: "db",
+});

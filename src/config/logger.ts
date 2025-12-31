@@ -1,22 +1,25 @@
-import type { FastifyReply } from "fastify";
+import type { FastifyServerOptions } from "fastify";
 
-export const envToLogger = {
+type LoggerConfig = {
+  [key: string]: FastifyServerOptions["logger"];
+};
+
+/**
+ * Logger Configuration
+ * 
+ * Different logging configurations for different environments.
+ */
+export const envToLogger: LoggerConfig = {
   development: {
     transport: {
-      target: 'pino-pretty',
+      target: "pino-pretty",
       options: {
-        translateTime: 'HH:MM:ss Z',
-        ignore: 'pid,hostname',
+        translateTime: "HH:MM:ss Z",
+        ignore: "pid,hostname",
+        colorize: true,
       },
-      serializers: {
-        res(reply: FastifyReply) {
-          return {
-            statusCode: reply.statusCode
-          }
-        }
-      }
     },
   },
   production: true,
   test: false,
-}
+};
